@@ -1,7 +1,7 @@
 <launch>
   <node name="local_manager" pkg="quadrotor_code" type="local_manager" output="screen">
     <param name='robotnum' value='0'/>
-    <param name='uav0_x' value='0'/>  <param name='uav0_y' value='-5'/>
+    <param name='uav0_x' value='-5'/>  <param name='uav0_y' value='-5'/>
   </node>
   
   <!-- Name of the map to use (without path nor extension) and initial position -->

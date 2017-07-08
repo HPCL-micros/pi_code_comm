@@ -377,6 +377,7 @@ pair<double,double> f_r()
     re.first = -C1*get_vector(q_r,my_vpoint_position).first - C2*get_vector(p_r,my_vpoint_velocity).first;
     re.second = -C1*get_vector(q_r,my_vpoint_position).second - C2*get_vector(p_r,my_vpoint_velocity).second;
     //cout<<q_r.first<<' '<<q_r.second<<' '<<get_vector(q_r,my_vpoint_position).first<<' '<<get_vector(q_r,my_vpoint_position).second<<endl;
+    //cout<<"f_r:"<<re.first<<' '<<re.second<<endl;
     return re;
 }
 

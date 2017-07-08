@@ -26,6 +26,10 @@
 #include <ctime>
 #include <fstream>
 #include <math.h>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/string.hpp> 
+#include <boost/serialization/vector.hpp>
 using namespace std;
 #define R 7
 #define sendT 1
@@ -42,7 +46,41 @@ double stand_x, stand_y;//作为标准的无人机的实际坐标
 /*ofstream vel_out("/home/czx/vel.txt");
 bool odom_first=true;
 std_msgs::Time odom_start_time;*/
-
+struct NeighborInfo{
+    int _r_id;
+    float _px;
+    float _py;
+    float _vx;
+    float _vy;
+    
+    template<class Archive>
+    void serialize(Archive &ar,const unsigned int version)
+    {
+        ar & _r_id;
+        ar & _px;
+        ar & _py;
+        ar & _vx;
+        ar & _vy;
+    }
+    
+    NeighborInfo(int r_id,float px,float py,float vx,float vy )
+    {
+        _r_id=r_id;
+        _px=px;
+        _py=py;
+        _vx=vx;
+        _vy=vy;
+    }
+    
+    NeighborInfo()
+    {
+        _r_id=-1;
+        _px=0;
+        _py=0;
+        _vx=0;
+        _vy=0;
+    }
+};
 class OdomHandle
 {
     public:
@@ -305,6 +343,19 @@ int main(int argc, char** argv)
            sendmsg.vy = odom_list[i]-> _vy;
            sendmsg.theta =  odom_list[i]-> _theta;
            odom_list[i]->pub.publish(sendmsg);
+           NeighborInfo ni(robotnum,odom_list[i]-> _px,odom_list[i]-> _py,odom_list[i]-> _vx,odom_list[i]-> _vy);
+           ostringstream archiveStream;
+           boost::archive::text_oarchive archive(archiveStream);
+           archive<<ni;
+           string ni_string=archiveStream.str();
+           //sendstring here
+           istringstream iarchiveStream(ni_string);
+           boost::archive::text_iarchive iarchive(iarchiveStream);
+           NeighborInfo ni_new;
+           //cout<<ni_new._r_id<<endl;
+           iarchive>>ni_new;
+           //cout<<ni_new._r_id<<endl;
+           
       }
       //publish odom 
       for(int i=0;i<1;i++)

@@ -17,6 +17,12 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
 )
 
+find_package(Boost REQUIRED COMPONENTS
+  system
+  thread
+  regex
+  serialization
+)
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -149,6 +155,9 @@ add_dependencies(local_manager decide_softbus_msgs_generate_messages_cpp)
 # )
  target_link_libraries( local_manager 
    ${catkin_LIBRARIES}
+   ${Boost_THREAD_LIBRARY}
+  ${Boost_REGEX_LIBRARY}
+  ${Boost_SERIALIZATION_LIBRARY}
  )
 # target_link_libraries( fly_circle 
 #   ${catkin_LIBRARIES}
@@ -161,8 +170,15 @@ add_dependencies(local_manager decide_softbus_msgs_generate_messages_cpp)
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
 )
 
+link_directories(
+  ${Boost_THREAD_LIBRARY}
+  ${Boost_REGEX_LIBRARY}
+  ${Boost_SERIALIZATION_LIBRARY}
+  ${catkin_LIBRARY_DIRS}
+)
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/quadrotor_code.cpp

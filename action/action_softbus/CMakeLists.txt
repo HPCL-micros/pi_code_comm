@@ -15,6 +15,12 @@ find_package(catkin REQUIRED
         tf
         tf_bridge
 )
+find_package(Boost REQUIRED COMPONENTS
+  system
+  thread
+  regex
+  serialization
+)
 find_package(Eigen3 REQUIRED)
 add_definitions(${EIGEN3_DEFINITIONS})
 
@@ -33,8 +39,15 @@ include_directories(
     include
     ${catkin_INCLUDE_DIRS}
     ${EIGEN3_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
 )
 
+link_directories(
+  ${Boost_THREAD_LIBRARY}
+  ${Boost_REGEX_LIBRARY}
+  ${Boost_SERIALIZATION_LIBRARY}
+  ${catkin_LIBRARY_DIRS}
+)
 # action_softbus
 add_library(action_softbus
   src/action_softbus.cpp
