@@ -129,6 +129,26 @@ Visualization Manager:
       Topic: /rviz_plan
       Unreliable: false
       Value: true
+    - Class: rviz/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+        map:
+          Value: true
+        uav0/odom:
+          Value: true
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        map:
+          uav0/odom:
+            {}
+      Update Interval: 0
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -146,7 +166,6 @@ Visualization Manager:
       Topic: /initialpose
     - Class: rviz/SetGoal
       Topic: /rviz_simple/goal
-      Topic: /rviz_simple/start_action
     - Class: rviz/PublishPoint
       Single click: true
       Topic: /rviz_simple/start_action
@@ -154,16 +173,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 13.9623795
+      Distance: 29.884594
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.956685305
-        Y: -3.9668808
-        Z: -0.109884687
+        X: -2.80587697
+        Y: -4.73858595
+        Z: -0.103823029
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Name: Current View
@@ -171,7 +190,7 @@ Visualization Manager:
       Pitch: 1.56979632
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.98359632
+      Yaw: 3.11358356
     Saved: ~
 Window Geometry:
   Displays:

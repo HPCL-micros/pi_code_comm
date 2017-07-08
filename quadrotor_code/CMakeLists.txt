@@ -124,7 +124,7 @@ catkin_package(
 #add_executable(gpstest src/gpstest.cpp) 
 add_executable(fixalpha src/fix_alpha.cpp) 
 #add_executable(hector_reset src/hector_reset.cpp) 
-#add_executable(bebop_manager src/bebop_manager.cpp) 
+add_executable(local_manager src/local_manager.cpp) 
 #add_executable(fly_circle src/fly_circle.cpp)
 #add_executable(hector_sim_manager src/hector_sim_manager.cpp)
 #add_dependencies(gpstest ${micros_flocking_EXPORTED_TARGETS})
@@ -135,7 +135,7 @@ add_dependencies(fixalpha ${quadrotor_code_EXPORTED_TARGETS})
 #add_dependencies(bebop_manager ${quadrotor_code_EXPORTED_TARGETS})
 #add_dependencies(fly_circle ${quadrotor_code_EXPORTED_TARGETS})
 #add_dependencies(hector_sim_manager ${quadrotor_code_EXPORTED_TARGETS})
-#add_dependencies(bebop_manager decide_softbus_msgs_generate_messages_cpp)
+add_dependencies(local_manager decide_softbus_msgs_generate_messages_cpp)
 #add_dependencies(hector_sim_manager decide_softbus_msgs_generate_messages_cpp)
 
 #target_link_libraries( gpstest 
@@ -147,9 +147,9 @@ add_dependencies(fixalpha ${quadrotor_code_EXPORTED_TARGETS})
 #  target_link_libraries( hector_reset 
 #   ${catkin_LIBRARIES}
 # )
-# target_link_libraries( bebop_manager 
-#   ${catkin_LIBRARIES}
-# )
+ target_link_libraries( local_manager 
+   ${catkin_LIBRARIES}
+ )
 # target_link_libraries( fly_circle 
 #   ${catkin_LIBRARIES}
 # )
