@@ -6,6 +6,7 @@
 #include "quadrotor_code/Neighbor.h"
 //#include "micros_flocking/Position.h"
 //#include "micros_flocking/Gradient.h"
+#include <std_msgs/String.h>
 #include "sensor_msgs/NavSatFix.h"
 #include "nav_msgs/Odometry.h"
 #include "quadrotor_code/Status.h"
@@ -17,8 +18,49 @@
 #include <cmath>
 #include <ctime>
 #include <boost/thread/thread.hpp> 
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/string.hpp> 
+#include <boost/serialization/vector.hpp>
 //#include <geodesy/utm.h>
 using namespace std;
+
+struct NeighborInfo{
+    int _r_id;
+    float _px;
+    float _py;
+    float _vx;
+    float _vy;
+    
+    template<class Archive>
+    void serialize(Archive &ar,const unsigned int version)
+    {
+        ar & _r_id;
+        ar & _px;
+        ar & _py;
+        ar & _vx;
+        ar & _vy;
+    }
+    
+    NeighborInfo(int r_id,float px,float py,float vx,float vy )
+    {
+        _r_id=r_id;
+        _px=px;
+        _py=py;
+        _vx=vx;
+        _vy=vy;
+    }
+    
+    NeighborInfo()
+    {
+        _r_id=-1;
+        _px=0;
+        _py=0;
+        _vx=0;
+        _vy=0;
+    }
+};
+
 namespace bebop_flock{
 
 bool simulation = false;
@@ -324,6 +366,7 @@ pair<double,double> f_g()
             (*i)->mut.unlock();
             continue;
         }
+        cout<<"neighbor"<<(*i)->_r_id<<" "<<(*i)->_px<<" "<<(*i)->_py<<endl;
         pair<double,double> n_ij = segma_epsilon(q_ij);
         re.first += phi_alpha(segma_norm(q_ij))*n_ij.first*(*i)->mypm_g;
         re.second += phi_alpha(segma_norm(q_ij))*n_ij.second*(*i)->mypm_g;
@@ -497,10 +540,41 @@ void rcv_thread()
     }
 };
 
+void virtual_rcv(const std_msgs::String::ConstPtr & msg)
+{
+    string istring=msg->data;
+    istringstream iarchiveStream(istring);
+    boost::archive::text_iarchive iarchive(iarchiveStream);
+    NeighborInfo ni_new;
+    iarchive>>ni_new;
+    int id=ni_new._r_id;
+    double px=ni_new._px;
+    double py=ni_new._py;
+    double vx=ni_new._vx;
+    double vy=ni_new._vy;            
+            
+    cout<<ni_new._r_id<<endl;
+    if(ni_new._r_id>0)
+    {
+        neighbor_list[id]->mut.lock();
+        neighbor_list[id]->_px=px;
+        neighbor_list[id]->_py=py;
+        neighbor_list[id]->_vx=vx;
+        neighbor_list[id]->_vy=vy;
+        neighbor_list[id]->_position.first = px;
+        neighbor_list[id]->_position.second = py;
+        neighbor_list[id]->_velocity.first = vx;
+        neighbor_list[id]->_velocity.second = vy;
+        neighbor_list[id]->mut.unlock();        
+    }
+
+}
+
 class BebopFlockingAlgorithm{
 public:
     ros::Publisher pub,vpoint_pub;
     ros::Subscriber sub, sub_theta;
+    ros::Subscriber virtual_sub;
     geometry_msgs:: Twist msg;
    //msg.linear.x=(rand()%100)/100.0;
    //msg.linear.y=(rand()%100)/100.0;
@@ -524,6 +598,7 @@ public:
         pub = n.advertise<geometry_msgs::Twist>("cmd_vel",1000);
         //0708sub = n.subscribe("neighbor", 1000, neighbor_cb);
         sub_theta = n.subscribe("position", 1000, my_theta_cb);
+        virtual_sub = n.subscribe("/broadcast", 1000, virtual_rcv);
         vpoint_pub = n.advertise<quadrotor_code::Status>("vpoint_position",1000);
         ros::Rate loop_rate(hz);
         time_count=0;

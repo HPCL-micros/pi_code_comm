@@ -12,6 +12,7 @@
 #include "quadrotor_code/Status.h"
 #include "quadrotor_code/Neighbor.h"
 #include "std_msgs/Time.h"
+#include "std_msgs/String.h"
 #include <geodesy/utm.h>
 #include "sensor_msgs/NavSatFix.h"
 #include <tf/LinearMath/Quaternion.h>
@@ -296,7 +297,7 @@ int main(int argc, char** argv)
    //ros::Publisher posepub = n.advertise<geometry_msgs::PoseArray>("/swarm_pose",1000);
    //rviz_goal_pub_ = n.advertise<decide_softbus_msgs::NavigationPoint>("/uav0/move_base_simple/goal", 0 );
    //ros::Subscriber rviz_sub = n.subscribe<geometry_msgs::PoseStamped>("/rviz_simple/goal", 1000, rvizGoalCb);
-   
+   ros::Publisher stringpub = n.advertise<std_msgs::String>("/broadcast",1000);
    //rviz_start_action_client_= n.serviceClient<decide_softbus_msgs::SetControlling>("/uav0/move_base/set_controlling");
    //ros::Subscriber rviz_start_action_sub = n.subscribe<geometry_msgs::PointStamped>("/rviz_simple/start_action", 1000, rvizStartActionCb);
    
@@ -349,6 +350,10 @@ int main(int argc, char** argv)
            archive<<ni;
            string ni_string=archiveStream.str();
            //sendstring here
+           std_msgs::String sendstring;
+           sendstring.data = ni_string;
+           stringpub.publish(sendstring);
+           //
            istringstream iarchiveStream(ni_string);
            boost::archive::text_iarchive iarchive(iarchiveStream);
            NeighborInfo ni_new;

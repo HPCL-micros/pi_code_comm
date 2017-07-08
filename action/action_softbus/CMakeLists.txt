@@ -75,6 +75,13 @@ target_link_libraries(action_softbus_node action_softbus)
 add_library(bebop_action
     src/bebop_action.cpp
 )
+target_link_libraries(bebop_action
+    ${Boost_LIBRARIES}
+    ${catkin_LIBRARIES}
+    ${Boost_THREAD_LIBRARY}
+  ${Boost_REGEX_LIBRARY}
+  ${Boost_SERIALIZATION_LIBRARY}
+    )
 add_dependencies(bebop_action action_softbus_gencfg)
 add_dependencies(bebop_action ${decide_softbus_msgs_EXPORTED_TARGETS})
 
